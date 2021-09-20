@@ -1,0 +1,38 @@
+In this level we don't have a lot of access on the files or directory resulting in a lot of "Persmissions denied"....
+So with that in mind, we wanted to find all the files we could have access to, at least one
+
+To do that we used the find command.
+Used with a specific set of options it results in a list of files in which we are interested.
+
+Here is the commnand
+
+find / -user flag00 -group flag00 2>/dev/null | grep -v 'proc'
+
+We want to look for files from the root directory : /
+Then we want to specify the user and group access aka us : flag00
+To remove all the error garbage resulting in bad persmission we clear them and grep the 'proc' lines (because we don't have access to them)
+
+The result of the commnand is pretty evident.
+
+/usr/sbin/john
+/rofs/usr/sbin/john
+
+We don't have excecution permission on them but we can see what's inside:
+
+Let's look at the first one : 
+
+cat /usr/sbin/john
+cdiiddwpgswtgt
+
+Well it looks like nothing to me, but more as the result of a cipher
+
+Let's look at the second file:
+
+cat /rofs/usr/sbin/john
+cdiiddwpgswtgt
+
+Same as the first one, due to the lenght of the text and the probability of it of being a simple viegenere or cesar cipher we used the dcode.fr website to do the work for us.
+Looking at the result of the decoding function, one of the result seems to be what we were looking for : nottohardhere
+
+And voila !
+
