@@ -1,0 +1,35 @@
+In the home there is an executable called level03.
+We can execute it and it prints "Exploit me".
+
+So here we go, we started to analyze the file it should be an ELF.
+Let's confirm that, using readelf -a level03
+
+We can see that this file is indeed an ELF, a 32 bit one exactly.
+We need more than that, so let's dig deeper on this mysterious file.
+
+With the help of ltrace we execute the file and ltrace will intercept and record all the dynamic library calls but also all the system calls exexecuted by the program.
+
+Let's see the output of ltrace.
+There are 2 calls to getegid, and 2 calls to setresgid and 1 system call to /usr/bin/env echo
+This is where we are heading, we need to change the call to echo to something else but to what ??
+The goal of this project is to get the flag right ? Why not try to execute the getflag function ? Let's try that
+
+
+After few minutes to find a decent way yo export the echo variable to launch the getflag we finally have the flag.
+
+To do so we first export the getflag to a temporary echo file in /tmp
+
+echo "/bin/sh -c 'getflag'" > /tmp/echo
+
+The -c option is to read commands from the command string aka here 'getflag'
+This is written in /tmp/echo
+
+Then we need to have the execution right on it
+
+chmod +x /tmp/echo
+
+After that we would like to add this new echo to the PATH
+
+export PATH=/tmp:$PATH
+
+With all that we can relaunch the ./level03 and we get the flag !
