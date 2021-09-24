@@ -1,0 +1,28 @@
+We connecting to level05, we get a new system mail.
+
+Opening it reveal a crontab scheduled every 2 minutes :
+
+cat /var/mail/level05
+*/2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
+
+Opening the /usr/s/bin/openarenaserver script we get :
+
+cat /usr/sbin/openarenaserver
+#!/bin/sh
+
+for i in /opt/openarenaserver/* ; do
+	(ulimit -t 5; bash -x "$i")
+	rm -f "$i"
+done
+
+Looking at /opt/openserver is an empty directory.
+But if we understand that script, it loops on everyfile on the directory openarenaserver
+Then limitt the amout of time execution to 5 seconds, check and execute the file if exists and then remove it
+
+So we can create a file that calls getflag and redirect the output.
+
+Something like this
+
+getflag > /tmp/flag
+
+after approximatively 2 minutes the script get executed, our file in /opt/openarenaserver is deleted and we have a new file in /tmp/flag containing our flag !
