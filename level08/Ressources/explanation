@@ -1,0 +1,35 @@
+In this level we have an executable and a file
+
+Trying to launche the executable gets us a message saying that we need to launch
+it with a file as parameter.
+
+Let's try to give it the token file present in the home.
+
+We don't have right on it.
+Hum.
+
+Let's try to create a file and give it as parameter.
+
+touch /tmp/abc
+
+./level08 /tmp/abc
+
+and no output.
+
+That means it's doing something at least, let's find out what with ltrace
+
+level08 is looking at the name of our parameter and looks for the string "token"
+
+You remember your shell piscine ? Remember symlink ? I do !
+
+Let's try to link a random file in /tmp to our token file.
+
+ln -s /home/user/level08/token /tmp/flag
+
+./level08 /tmp/flag
+
+quif5eloekouj29ke0vouxean
+
+Is this the flag ? No. We haven't launch getflag.
+
+This is the password to log in as flag08.
