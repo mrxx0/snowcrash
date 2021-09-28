@@ -1,0 +1,32 @@
+In this level we have yet an executable called level07.
+
+Launching it just print 'level07'... nothing realling interesting.
+But how does it print it ? 
+
+Let's find out using ltrace and executing level07
+
+We can see that it's getting the env of LOGNAME
+And LOGNAME is us : level07
+It's also printing by calling to echo from /bin/echo and echoing level07
+
+ltrace doesn't show the exact content of the executable more the final result
+So our level07 print isn't printed from the echo directly but from the LOGNAME
+env variable.
+
+Let's try to modify it.
+
+export LOGNAME=ls
+
+So our echo command is not printing ls, but it also means we can add something
+to our export. Like ... : && SOMETHING right ?
+
+Let's try that
+
+export LOGNAME='ls && echo "hi"'
+
+It's printing ls and "hi" also ! That means we can ask for a shell right ?
+
+export LOGNAME='echo "This is the way" && bash'
+
+And BOOM ! Connected as flag07 now we can call the getflag function.
+
