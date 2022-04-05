@@ -1,0 +1,22 @@
+On this level we have two files : level06 an executable and level06.php a php 
+file.
+
+When executing the level06 there is an error asking for a file as a parameter.
+
+The level06.php contains 2 functions using a regex.
+Learning about it on the internet we found that that one of the regex is 
+vulnerable to code injection.
+
+Indeed the /e placed in the preg_replace means that all expression in (.*) 
+will be evaluated by a fonction.
+
+We need to understand the meaning of the regex to inject a valid command 
+and then execute the code we want.
+As a reminder we need to launch getflag of access to the flag06 user.
+
+We want to access to the flag06 user so why not ask for a shell access right ?
+
+So if we wrote this "[x {${system(bash)}}]" in a file and we send it to level06
+we should have access to flag06's shell.
+
+[x {${system(bash)}}] and boom ! connected as flag06

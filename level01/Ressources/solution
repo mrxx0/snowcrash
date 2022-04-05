@@ -1,0 +1,21 @@
+In the first level00 I discovered in the /etc/passwd a line for flag01 with a hash.
+Of course I couldn't use it like that so I ask my friend John if he knew sowmthing about it.
+
+level01@SnowCrash:~$ cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+...
+flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+...
+flag14:x:3014:3014::/home/flag/flag14:/bin/bash
+
+We have the encrypted password of flag01, let's try a password cracker
+"John the ripper"
+
+We copy the line of the /etc/passwd to a random file 
+
+flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+
+then we ask John to take this file and see what he could do about it, and instantly John gave me an answer.
+
+Ok we have flag01's password : abcdefg and we could see that the hash function used on the password is DES 128.
+

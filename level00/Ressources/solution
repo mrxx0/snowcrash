@@ -1,0 +1,36 @@
+In this level we don't have a lot of access on the files or directory resulting in a lot of "Persmissions denied"....
+So with that in mind, we wanted to find all the files we could have access to, at least one
+
+In the readme file in intranet's video of Snow Crash we can read,
+"FIND this first file who can run only as flag00"
+
+To do that we used the find command.
+Used with a specific set of options it results in a list of files in which we are interested.
+We want to look for files from the root directory : /
+Then we want to specify the group access aka us : flag00
+
+level00@SnowCrash:/$ find -group flag00 2>/dev/null
+./usr/sbin/john
+./rofs/usr/sbin/john
+
+We don't have excecution permission on them but we can see what's inside:
+
+Let's look at the first one : 
+
+level00@SnowCrash:/$ cat /usr/sbin/john
+cdiiddwpgswtgt
+
+Let's look at the second file:
+
+cat /rofs/usr/sbin/john
+cdiiddwpgswtgt
+
+Well it looks like nothing to me, but more as the result of a cipher
+
+Same as the first one, due to the lenght of the text and the probability of it of being a simple viegenere or cesar cipher we used the dcode.fr website to do the work for us.
+Looking at the result of the decoding function, one of the result seems to be what we were looking for : nottoohardhere
+
+It's a simple cesar code, (ROT 15 here),
+cdiiddwpgswtgt -> nottoohardhere, it's password of flag00
+
+And voila !

